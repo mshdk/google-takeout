@@ -12,7 +12,7 @@ copied_file_pattern = re.compile('[^()]*(\(\d+\))[^()]*')
 
 video_formats = {'.mov', '.mp4'}
 video_formats |= set(map(lambda x: x.upper(), video_formats))
-image_formats = {'.jpeg', '.jpg', '.png', '.heic'}
+image_formats = {'.jpeg', '.jpg', '.png', '.heic', '.gif'}
 image_formats |= set(map(lambda x: x.upper(), image_formats))
 
 def all_media_files(dir: Path) -> List[Path]:
@@ -31,10 +31,11 @@ def all_media_files(dir: Path) -> List[Path]:
     return res
 
 def corresponding_json(media: Path) -> Optional[Path]:
-    # the .json files appear to have a 51 char limit, and they just truncate the prefix
+    # the .json files appear to have a 51 char limit, and they just truncate the prefix. Filenames are localized to the language of the google account, so fx in danish -edited becomes -redigeret. You can add more.
     possible_names = [
         media.name[:46],
         media.name.replace('-edited', '')[:46],
+        media.name.replace('-redigeret', '')[:46],
     ]
 
     match = copied_file_pattern.match(media.name)
